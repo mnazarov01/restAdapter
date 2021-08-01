@@ -9,7 +9,6 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	jaxb
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -20,14 +19,6 @@ repositories {
 }
 
 dependencies {
-
-	jaxb (
-			'com.sun.xml.bind:jaxb-core:2.3.0.1',
-			'com.sun.xml.bind:jaxb-xjc:2.3.2',
-			'com.sun.xml.bind:jaxb-impl:2.3.2',
-			'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
-	)
-
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
@@ -48,25 +39,4 @@ dependencies {
 
 test {
 	useJUnitPlatform()
-}
-
-
-task generateJavaClasses {
-	System.setProperty('javax.xml.accessExternalSchema', 'all')
-	def jaxbTargetDir = file("src/main/java/")
-	doLast {
-		jaxbTargetDir.mkdirs()
-		ant.taskdef(
-				name: 'xjc',
-				classname: 'com.sun.tools.xjc.XJCTask',
-				classpath: configurations.jaxb.asPath
-		)
-		ant.jaxbTargetDir = jaxbTargetDir
-		ant.xjc(
-				destdir: '${jaxbTargetDir}',
-				package: 'com.mrHyde30.restAdapter.soap',
-				schema: 'src/main/resources/wsdl/calculator.wsdl',
-				language: 'WSDL'
-		)
-	}
 }
